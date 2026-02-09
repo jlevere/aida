@@ -6,7 +6,7 @@ import { loadCards, saveCards, loadSettings, saveSettings, loadStats, saveStats 
 
 interface EngineCallbacks {
   onPrompt: (kana: string) => void;
-  onCorrect: (interval: string) => void;
+  onCorrect: (kana: string, interval: string) => void;
   onIncorrect: (correctReading: string, interval: string) => void;
   onStatsUpdate: (stats: SessionStats) => void;
 }
@@ -131,7 +131,7 @@ export function createEngine(callbacks: EngineCallbacks): {
 
           saveCards(cards);
           saveStats(stats);
-          callbacks.onCorrect(interval);
+          callbacks.onCorrect(current.entry.kana, interval);
           callbacks.onStatsUpdate(stats);
 
           current = null;

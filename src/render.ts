@@ -3,7 +3,7 @@ import type { SessionStats } from "./types.ts";
 export interface Renderer {
   showPrompt(kana: string): void;
   clearPrompt(): void;
-  showFeedback(text: string): void;
+  showFeedback(text: string, autoFade?: boolean): void;
   clearFeedback(): void;
   updateStats(stats: SessionStats): void;
   setSettingsOpen(open: boolean): void;
@@ -44,15 +44,18 @@ export function createRenderer(): Renderer {
       prompt.textContent = "";
     },
 
-    showFeedback: (text: string): void => {
+    showFeedback: (text: string, autoFade = true): void => {
       if (feedbackTimeout !== undefined) {
         clearTimeout(feedbackTimeout);
+        feedbackTimeout = undefined;
       }
       feedback.textContent = text;
-      feedbackTimeout = window.setTimeout(() => {
-        feedback.textContent = "";
-        feedbackTimeout = undefined;
-      }, 1500);
+      if (autoFade) {
+        feedbackTimeout = window.setTimeout(() => {
+          feedback.textContent = "";
+          feedbackTimeout = undefined;
+        }, 1500);
+      }
     },
 
     clearFeedback: (): void => {

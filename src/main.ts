@@ -11,11 +11,11 @@ function main(): void {
     onPrompt: (kana: string): void => {
       renderer.showPrompt(kana);
     },
-    onCorrect: (interval: string): void => {
-      renderer.showFeedback(`→ ${interval}`);
+    onCorrect: (kana: string, interval: string): void => {
+      renderer.showFeedback(`${kana} → ${interval}`);
     },
-    onIncorrect: (correctReading: string, interval: string): void => {
-      renderer.showFeedback(`${correctReading} · → ${interval}`);
+    onIncorrect: (correctReading: string): void => {
+      renderer.showFeedback(correctReading, false);
     },
     onStatsUpdate: (stats): void => {
       renderer.updateStats(stats);
