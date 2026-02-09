@@ -4,7 +4,7 @@ import type { Card } from "ts-fsrs";
 export interface KanaEntry {
   readonly kana: string;
   readonly readings: readonly string[];
-  readonly group: "gojuon" | "dakuten" | "combo";
+  readonly row: "a" | "ka" | "sa" | "ta" | "na" | "ha" | "ma" | "ya" | "ra" | "wa" | "dakuten" | "combo";
   readonly set: "hiragana" | "katakana";
 }
 
@@ -19,6 +19,8 @@ export interface CardState {
 export interface Settings {
   readonly hiragana: boolean;
   readonly katakana: boolean;
+  readonly rows: readonly string[];
+  readonly theme: "system" | "light" | "dark";
 }
 
 /** Aggregate session stats */

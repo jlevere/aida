@@ -28,7 +28,8 @@ export function createEngine(callbacks: EngineCallbacks): {
   resetProgress: () => void;
 } {
   let cards = new Map<string, CardState>();
-  let settings: Settings = { hiragana: true, katakana: false };
+  const defaultRows = ["a", "ka", "sa", "ta", "na", "ha", "ma", "ya", "ra", "wa", "dakuten", "combo"];
+  let settings: Settings = { hiragana: true, katakana: false, rows: defaultRows, theme: "system" };
   let stats: SessionStats = { correct: 0, incorrect: 0, totalTime: 0, responses: 0 };
   let current: CurrentState | null = null;
 
@@ -70,7 +71,16 @@ export function createEngine(callbacks: EngineCallbacks): {
         return null;
       }
 
-      const nextState = getNextDue(cards);
+      // Filter cards to only active kana
+      const activeCards = new Map<string, CardState>();
+      for (const entry of activeKana) {
+        const cardState = cards.get(entry.kana);
+        if (cardState !== undefined) {
+          activeCards.set(entry.kana, cardState);
+        }
+      }
+
+      const nextState = getNextDue(activeCards);
       if (nextState === undefined) {
         return null;
       }

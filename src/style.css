@@ -7,6 +7,26 @@
   --muted: #9a9a8e;
 }
 
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #1a1a1e;
+    --fg: #d4d2cc;
+    --accent: #8b8bb5;
+    --error: #c17a7a;
+    --success: #7aaa7a;
+    --muted: #6a6a64;
+  }
+}
+
+[data-theme="dark"] {
+  --bg: #1a1a1e;
+  --fg: #d4d2cc;
+  --accent: #8b8bb5;
+  --error: #c17a7a;
+  --success: #7aaa7a;
+  --muted: #6a6a64;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -26,8 +46,7 @@ body {
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  padding: 2rem;
-  padding-bottom: 5rem;
+  padding: 2rem 2rem 1rem;
 }
 
 #prompt {
@@ -86,11 +105,15 @@ body {
   transition: opacity 300ms ease;
 }
 
+#bottom {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 3rem;
+}
+
 #wordmark {
-  position: fixed;
-  bottom: 2rem;
-  left: 50%;
-  transform: translateX(-50%);
   font-size: 1rem;
   color: var(--muted);
   background: none;
@@ -107,23 +130,25 @@ body {
 }
 
 #settings {
-  position: fixed;
-  bottom: 4rem;
-  left: 50%;
-  transform: translateX(-50%);
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 400ms cubic-bezier(0.4, 0, 0.2, 1),
+              opacity 300ms ease;
+  opacity: 0;
+}
+
+#settings > .settings-inner {
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 0.75rem;
-  max-height: 0;
-  overflow: hidden;
-  opacity: 0;
-  transition: max-height 300ms ease, opacity 200ms ease;
 }
 
 #settings.open {
-  max-height: 12rem;
+  grid-template-rows: 1fr;
   opacity: 1;
+  padding-bottom: 0.5rem;
 }
 
 #settings button {
@@ -167,4 +192,27 @@ body {
 
 [data-tooltip]:hover::after {
   opacity: 0.7;
+}
+
+#row-toggles {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.25rem 0.5rem;
+  max-width: 20rem;
+}
+
+#row-toggles button {
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 0.7rem;
+  cursor: pointer;
+  letter-spacing: 0.05em;
+  font-family: inherit;
+  padding: 0.2rem 0.4rem;
+}
+
+#row-toggles button.active {
+  color: var(--fg);
 }

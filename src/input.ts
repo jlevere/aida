@@ -6,7 +6,6 @@ export interface InputControls {
   clear: () => void;
   focus: () => void;
   setError: (error: boolean) => void;
-  setDisabled: (disabled: boolean) => void;
 }
 
 export function setupInput(el: HTMLInputElement, callbacks: InputCallbacks): InputControls {
@@ -31,9 +30,6 @@ export function setupInput(el: HTMLInputElement, callbacks: InputCallbacks): Inp
       } else {
         el.removeAttribute("data-error");
       }
-    },
-    setDisabled: (disabled: boolean): void => {
-      el.disabled = disabled;
     },
   };
 }

@@ -1,63 +1,72 @@
 import type { KanaEntry, Settings } from "./types.ts";
 
-function h(kana: string, readings: readonly string[], group: "gojuon" | "dakuten" | "combo"): KanaEntry {
-  return { kana, readings, group, set: "hiragana" };
+function h(kana: string, readings: readonly string[], row: "a" | "ka" | "sa" | "ta" | "na" | "ha" | "ma" | "ya" | "ra" | "wa" | "dakuten" | "combo"): KanaEntry {
+  return { kana, readings, row, set: "hiragana" };
 }
 
-function k(kana: string, readings: readonly string[], group: "gojuon" | "dakuten" | "combo"): KanaEntry {
-  return { kana, readings, group, set: "katakana" };
+function k(kana: string, readings: readonly string[], row: "a" | "ka" | "sa" | "ta" | "na" | "ha" | "ma" | "ya" | "ra" | "wa" | "dakuten" | "combo"): KanaEntry {
+  return { kana, readings, row, set: "katakana" };
 }
 
 const hiragana: readonly KanaEntry[] = [
-  // Gojuon (46)
-  h("あ", ["a"], "gojuon"),
-  h("い", ["i"], "gojuon"),
-  h("う", ["u"], "gojuon"),
-  h("え", ["e"], "gojuon"),
-  h("お", ["o"], "gojuon"),
-  h("か", ["ka"], "gojuon"),
-  h("き", ["ki"], "gojuon"),
-  h("く", ["ku"], "gojuon"),
-  h("け", ["ke"], "gojuon"),
-  h("こ", ["ko"], "gojuon"),
-  h("さ", ["sa"], "gojuon"),
-  h("し", ["shi", "si"], "gojuon"),
-  h("す", ["su"], "gojuon"),
-  h("せ", ["se"], "gojuon"),
-  h("そ", ["so"], "gojuon"),
-  h("た", ["ta"], "gojuon"),
-  h("ち", ["chi", "ti"], "gojuon"),
-  h("つ", ["tsu", "tu"], "gojuon"),
-  h("て", ["te"], "gojuon"),
-  h("と", ["to"], "gojuon"),
-  h("な", ["na"], "gojuon"),
-  h("に", ["ni"], "gojuon"),
-  h("ぬ", ["nu"], "gojuon"),
-  h("ね", ["ne"], "gojuon"),
-  h("の", ["no"], "gojuon"),
-  h("は", ["ha"], "gojuon"),
-  h("ひ", ["hi"], "gojuon"),
-  h("ふ", ["fu", "hu"], "gojuon"),
-  h("へ", ["he"], "gojuon"),
-  h("ほ", ["ho"], "gojuon"),
-  h("ま", ["ma"], "gojuon"),
-  h("み", ["mi"], "gojuon"),
-  h("む", ["mu"], "gojuon"),
-  h("め", ["me"], "gojuon"),
-  h("も", ["mo"], "gojuon"),
-  h("や", ["ya"], "gojuon"),
-  h("ゆ", ["yu"], "gojuon"),
-  h("よ", ["yo"], "gojuon"),
-  h("ら", ["ra"], "gojuon"),
-  h("り", ["ri"], "gojuon"),
-  h("る", ["ru"], "gojuon"),
-  h("れ", ["re"], "gojuon"),
-  h("ろ", ["ro"], "gojuon"),
-  h("わ", ["wa"], "gojuon"),
-  h("を", ["wo", "o"], "gojuon"),
-  h("ん", ["n"], "gojuon"),
+  // Vowels (a row)
+  h("あ", ["a"], "a"),
+  h("い", ["i"], "a"),
+  h("う", ["u"], "a"),
+  h("え", ["e"], "a"),
+  h("お", ["o"], "a"),
+  // K row
+  h("か", ["ka"], "ka"),
+  h("き", ["ki"], "ka"),
+  h("く", ["ku"], "ka"),
+  h("け", ["ke"], "ka"),
+  h("こ", ["ko"], "ka"),
+  // S row
+  h("さ", ["sa"], "sa"),
+  h("し", ["shi", "si"], "sa"),
+  h("す", ["su"], "sa"),
+  h("せ", ["se"], "sa"),
+  h("そ", ["so"], "sa"),
+  // T row
+  h("た", ["ta"], "ta"),
+  h("ち", ["chi", "ti"], "ta"),
+  h("つ", ["tsu", "tu"], "ta"),
+  h("て", ["te"], "ta"),
+  h("と", ["to"], "ta"),
+  // N row
+  h("な", ["na"], "na"),
+  h("に", ["ni"], "na"),
+  h("ぬ", ["nu"], "na"),
+  h("ね", ["ne"], "na"),
+  h("の", ["no"], "na"),
+  // H row
+  h("は", ["ha"], "ha"),
+  h("ひ", ["hi"], "ha"),
+  h("ふ", ["fu", "hu"], "ha"),
+  h("へ", ["he"], "ha"),
+  h("ほ", ["ho"], "ha"),
+  // M row
+  h("ま", ["ma"], "ma"),
+  h("み", ["mi"], "ma"),
+  h("む", ["mu"], "ma"),
+  h("め", ["me"], "ma"),
+  h("も", ["mo"], "ma"),
+  // Y row
+  h("や", ["ya"], "ya"),
+  h("ゆ", ["yu"], "ya"),
+  h("よ", ["yo"], "ya"),
+  // R row
+  h("ら", ["ra"], "ra"),
+  h("り", ["ri"], "ra"),
+  h("る", ["ru"], "ra"),
+  h("れ", ["re"], "ra"),
+  h("ろ", ["ro"], "ra"),
+  // W row
+  h("わ", ["wa"], "wa"),
+  h("を", ["wo", "o"], "wa"),
+  h("ん", ["n"], "wa"),
 
-  // Dakuten (25)
+  // Dakuten
   h("が", ["ga"], "dakuten"),
   h("ぎ", ["gi"], "dakuten"),
   h("ぐ", ["gu"], "dakuten"),
@@ -84,7 +93,7 @@ const hiragana: readonly KanaEntry[] = [
   h("ぺ", ["pe"], "dakuten"),
   h("ぽ", ["po"], "dakuten"),
 
-  // Combo/yoon (33)
+  // Combo/yoon
   h("きゃ", ["kya"], "combo"),
   h("きゅ", ["kyu"], "combo"),
   h("きょ", ["kyo"], "combo"),
@@ -121,55 +130,64 @@ const hiragana: readonly KanaEntry[] = [
 ];
 
 const katakana: readonly KanaEntry[] = [
-  // Gojuon (46)
-  k("ア", ["a"], "gojuon"),
-  k("イ", ["i"], "gojuon"),
-  k("ウ", ["u"], "gojuon"),
-  k("エ", ["e"], "gojuon"),
-  k("オ", ["o"], "gojuon"),
-  k("カ", ["ka"], "gojuon"),
-  k("キ", ["ki"], "gojuon"),
-  k("ク", ["ku"], "gojuon"),
-  k("ケ", ["ke"], "gojuon"),
-  k("コ", ["ko"], "gojuon"),
-  k("サ", ["sa"], "gojuon"),
-  k("シ", ["shi", "si"], "gojuon"),
-  k("ス", ["su"], "gojuon"),
-  k("セ", ["se"], "gojuon"),
-  k("ソ", ["so"], "gojuon"),
-  k("タ", ["ta"], "gojuon"),
-  k("チ", ["chi", "ti"], "gojuon"),
-  k("ツ", ["tsu", "tu"], "gojuon"),
-  k("テ", ["te"], "gojuon"),
-  k("ト", ["to"], "gojuon"),
-  k("ナ", ["na"], "gojuon"),
-  k("ニ", ["ni"], "gojuon"),
-  k("ヌ", ["nu"], "gojuon"),
-  k("ネ", ["ne"], "gojuon"),
-  k("ノ", ["no"], "gojuon"),
-  k("ハ", ["ha"], "gojuon"),
-  k("ヒ", ["hi"], "gojuon"),
-  k("フ", ["fu", "hu"], "gojuon"),
-  k("ヘ", ["he"], "gojuon"),
-  k("ホ", ["ho"], "gojuon"),
-  k("マ", ["ma"], "gojuon"),
-  k("ミ", ["mi"], "gojuon"),
-  k("ム", ["mu"], "gojuon"),
-  k("メ", ["me"], "gojuon"),
-  k("モ", ["mo"], "gojuon"),
-  k("ヤ", ["ya"], "gojuon"),
-  k("ユ", ["yu"], "gojuon"),
-  k("ヨ", ["yo"], "gojuon"),
-  k("ラ", ["ra"], "gojuon"),
-  k("リ", ["ri"], "gojuon"),
-  k("ル", ["ru"], "gojuon"),
-  k("レ", ["re"], "gojuon"),
-  k("ロ", ["ro"], "gojuon"),
-  k("ワ", ["wa"], "gojuon"),
-  k("ヲ", ["wo", "o"], "gojuon"),
-  k("ン", ["n"], "gojuon"),
+  // Vowels (a row)
+  k("ア", ["a"], "a"),
+  k("イ", ["i"], "a"),
+  k("ウ", ["u"], "a"),
+  k("エ", ["e"], "a"),
+  k("オ", ["o"], "a"),
+  // K row
+  k("カ", ["ka"], "ka"),
+  k("キ", ["ki"], "ka"),
+  k("ク", ["ku"], "ka"),
+  k("ケ", ["ke"], "ka"),
+  k("コ", ["ko"], "ka"),
+  // S row
+  k("サ", ["sa"], "sa"),
+  k("シ", ["shi", "si"], "sa"),
+  k("ス", ["su"], "sa"),
+  k("セ", ["se"], "sa"),
+  k("ソ", ["so"], "sa"),
+  // T row
+  k("タ", ["ta"], "ta"),
+  k("チ", ["chi", "ti"], "ta"),
+  k("ツ", ["tsu", "tu"], "ta"),
+  k("テ", ["te"], "ta"),
+  k("ト", ["to"], "ta"),
+  // N row
+  k("ナ", ["na"], "na"),
+  k("ニ", ["ni"], "na"),
+  k("ヌ", ["nu"], "na"),
+  k("ネ", ["ne"], "na"),
+  k("ノ", ["no"], "na"),
+  // H row
+  k("ハ", ["ha"], "ha"),
+  k("ヒ", ["hi"], "ha"),
+  k("フ", ["fu", "hu"], "ha"),
+  k("ヘ", ["he"], "ha"),
+  k("ホ", ["ho"], "ha"),
+  // M row
+  k("マ", ["ma"], "ma"),
+  k("ミ", ["mi"], "ma"),
+  k("ム", ["mu"], "ma"),
+  k("メ", ["me"], "ma"),
+  k("モ", ["mo"], "ma"),
+  // Y row
+  k("ヤ", ["ya"], "ya"),
+  k("ユ", ["yu"], "ya"),
+  k("ヨ", ["yo"], "ya"),
+  // R row
+  k("ラ", ["ra"], "ra"),
+  k("リ", ["ri"], "ra"),
+  k("ル", ["ru"], "ra"),
+  k("レ", ["re"], "ra"),
+  k("ロ", ["ro"], "ra"),
+  // W row
+  k("ワ", ["wa"], "wa"),
+  k("ヲ", ["wo", "o"], "wa"),
+  k("ン", ["n"], "wa"),
 
-  // Dakuten (25)
+  // Dakuten
   k("ガ", ["ga"], "dakuten"),
   k("ギ", ["gi"], "dakuten"),
   k("グ", ["gu"], "dakuten"),
@@ -196,7 +214,7 @@ const katakana: readonly KanaEntry[] = [
   k("ペ", ["pe"], "dakuten"),
   k("ポ", ["po"], "dakuten"),
 
-  // Combo/yoon (33)
+  // Combo/yoon
   k("キャ", ["kya"], "combo"),
   k("キュ", ["kyu"], "combo"),
   k("キョ", ["kyo"], "combo"),
@@ -235,12 +253,10 @@ const katakana: readonly KanaEntry[] = [
 export const KANA: readonly KanaEntry[] = [...hiragana, ...katakana];
 
 export function getActiveKana(settings: Settings): readonly KanaEntry[] {
-  const result: KanaEntry[] = [];
-  if (settings.hiragana) {
-    result.push(...hiragana);
-  }
-  if (settings.katakana) {
-    result.push(...katakana);
-  }
-  return result;
+  return KANA.filter(entry => {
+    const setMatch = (entry.set === "hiragana" && settings.hiragana)
+      || (entry.set === "katakana" && settings.katakana);
+    const rowMatch = settings.rows.includes(entry.row);
+    return setMatch && rowMatch;
+  });
 }

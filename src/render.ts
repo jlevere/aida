@@ -8,6 +8,8 @@ export interface Renderer {
   updateStats(stats: SessionStats): void;
   setSettingsOpen(open: boolean): void;
   setToggleState(id: "toggle-hiragana" | "toggle-katakana", active: boolean): void;
+  setRowToggleState(row: string, active: boolean): void;
+  setTheme(theme: "system" | "light" | "dark"): void;
 }
 
 let feedbackTimeout: number | undefined;
@@ -92,6 +94,29 @@ export function createRenderer(): Renderer {
         el.classList.add("active");
       } else {
         el.classList.remove("active");
+      }
+    },
+
+    setRowToggleState: (row: string, active: boolean): void => {
+      const el = document.querySelector<HTMLButtonElement>(`#row-toggles button[data-row="${row}"]`);
+      if (el === null) return;
+      if (active) {
+        el.classList.add("active");
+      } else {
+        el.classList.remove("active");
+      }
+    },
+
+    setTheme: (theme: "system" | "light" | "dark"): void => {
+      const html = document.documentElement;
+      if (theme === "system") {
+        html.removeAttribute("data-theme");
+      } else {
+        html.setAttribute("data-theme", theme);
+      }
+      const themeButton = document.querySelector<HTMLButtonElement>("#toggle-theme");
+      if (themeButton !== null) {
+        themeButton.textContent = theme === "system" ? "auto" : theme;
       }
     },
   };

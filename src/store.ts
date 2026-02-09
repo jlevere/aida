@@ -56,17 +56,30 @@ export function saveCards(cards: Map<string, CardState>): void {
 
 export function loadSettings(): Settings {
   const stored = localStorage.getItem(SETTINGS_KEY);
+  const defaultRows = ["a", "ka", "sa", "ta", "na", "ha", "ma", "ya", "ra", "wa", "dakuten", "combo"];
   if (stored === null) {
-    return { hiragana: true, katakana: false };
+    return {
+      hiragana: true,
+      katakana: false,
+      rows: defaultRows,
+      theme: "system",
+    };
   }
   try {
     const parsed = JSON.parse(stored) as Partial<Settings>;
     return {
       hiragana: parsed.hiragana === true,
       katakana: parsed.katakana === true,
+      rows: Array.isArray(parsed.rows) ? parsed.rows : defaultRows,
+      theme: parsed.theme === "light" || parsed.theme === "dark" ? parsed.theme : "system",
     };
   } catch {
-    return { hiragana: true, katakana: false };
+    return {
+      hiragana: true,
+      katakana: false,
+      rows: defaultRows,
+      theme: "system",
+    };
   }
 }
 

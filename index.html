@@ -20,11 +20,30 @@
       />
       <div id="feedback" aria-live="polite"></div>
       <div id="stats"></div>
-      <button id="wordmark" type="button" aria-label="Settings">間</button>
-      <div id="settings" aria-hidden="true">
-        <button id="toggle-hiragana" type="button">hiragana</button>
-        <button id="toggle-katakana" type="button">katakana</button>
-        <button id="reset" type="button">reset progress</button>
+      <div id="bottom">
+        <div id="settings" aria-hidden="true">
+          <div class="settings-inner">
+            <button id="toggle-hiragana" type="button">hiragana</button>
+            <button id="toggle-katakana" type="button">katakana</button>
+            <div id="row-toggles">
+              <button type="button" data-row="a">a</button>
+              <button type="button" data-row="ka">ka</button>
+              <button type="button" data-row="sa">sa</button>
+              <button type="button" data-row="ta">ta</button>
+              <button type="button" data-row="na">na</button>
+              <button type="button" data-row="ha">ha</button>
+              <button type="button" data-row="ma">ma</button>
+              <button type="button" data-row="ya">ya</button>
+              <button type="button" data-row="ra">ra</button>
+              <button type="button" data-row="wa">wa</button>
+              <button type="button" data-row="dakuten">゛</button>
+              <button type="button" data-row="combo">combo</button>
+            </div>
+            <button id="toggle-theme" type="button">auto</button>
+            <button id="reset" type="button">reset progress</button>
+          </div>
+        </div>
+        <button id="wordmark" type="button" aria-label="Settings">間</button>
       </div>
     </main>
     <script type="module" src="/src/main.ts"></script>

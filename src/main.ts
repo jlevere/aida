@@ -27,27 +27,29 @@ function main(): void {
     throw new Error("Input element not found");
   }
 
+  let locked = false;
+
   const input = setupInput(inputEl, {
     onInput: (value: string): void => {
+      if (locked) return;
+
       const isValidPrefix = engine.checkPrefix(value);
       input.setError(value.length > 0 && !isValidPrefix);
 
       const result = engine.attempt(value);
       if (result === "correct") {
         input.clear();
-        setTimeout(() => {
-          renderer.clearFeedback();
-          const next = engine.next();
-          if (next === null) {
-            renderer.showPrompt("—");
-          }
-          input.focus();
-        }, 1500);
+        // feedback already shown by onCorrect callback, will auto-fade
+        const next = engine.next();
+        if (next === null) {
+          renderer.showPrompt("—");
+        }
+        input.focus();
       } else if (result === "incorrect") {
         // Feedback already shown by engine callback
-        input.setDisabled(true);
+        locked = true;
         setTimeout(() => {
-          input.setDisabled(false);
+          locked = false;
           input.clear();
           const next = engine.next();
           if (next === null) {
@@ -119,10 +121,55 @@ function main(): void {
     });
   }
 
+  const toggleThemeEl = document.querySelector<HTMLButtonElement>("#toggle-theme");
+  if (toggleThemeEl !== null) {
+    toggleThemeEl.addEventListener("click", () => {
+      const currentSettings = engine.getSettings();
+      const nextTheme = currentSettings.theme === "system"
+        ? "light"
+        : currentSettings.theme === "light"
+        ? "dark"
+        : "system";
+      engine.updateSettings({ theme: nextTheme });
+      renderer.setTheme(nextTheme);
+    });
+  }
+
+  const rowToggleButtons = document.querySelectorAll<HTMLButtonElement>("#row-toggles button");
+  for (const button of rowToggleButtons) {
+    const row = button.getAttribute("data-row");
+    if (row === null) continue;
+    button.addEventListener("click", () => {
+      const currentSettings = engine.getSettings();
+      const currentRows = [...currentSettings.rows];
+      const index = currentRows.indexOf(row);
+      if (index >= 0) {
+        currentRows.splice(index, 1);
+      } else {
+        currentRows.push(row);
+      }
+      engine.updateSettings({ rows: currentRows });
+      renderer.setRowToggleState(row, currentRows.includes(row));
+      engine.init();
+      const next = engine.next();
+      if (next === null) {
+        renderer.showPrompt("—");
+      } else {
+        renderer.showPrompt(next.kana);
+      }
+      input.focus();
+    });
+  }
+
   // Initialize
   engine.init();
-  renderer.setToggleState("toggle-hiragana", engine.getSettings().hiragana);
-  renderer.setToggleState("toggle-katakana", engine.getSettings().katakana);
+  const initialSettings = engine.getSettings();
+  renderer.setToggleState("toggle-hiragana", initialSettings.hiragana);
+  renderer.setToggleState("toggle-katakana", initialSettings.katakana);
+  renderer.setTheme(initialSettings.theme);
+  for (const row of ["a", "ka", "sa", "ta", "na", "ha", "ma", "ya", "ra", "wa", "dakuten", "combo"]) {
+    renderer.setRowToggleState(row, initialSettings.rows.includes(row));
+  }
   renderer.updateStats(engine.getStats());
 
   const next = engine.next();
