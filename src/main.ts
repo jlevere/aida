@@ -65,7 +65,6 @@ function main(): void {
         input.focus();
       } else if (result === "incorrect") {
         retryReadings = engine.getCurrentReadings();
-        input.clear();
         input.focus();
       }
     },
