@@ -46,6 +46,7 @@ body {
   align-items: center;
   justify-content: center;
   min-height: 100vh;
+  min-height: 100dvh;
   padding: 2rem 2rem 1rem;
 }
 
@@ -111,6 +112,7 @@ body {
   flex-direction: column;
   align-items: center;
   padding-top: 3rem;
+  padding-bottom: env(safe-area-inset-bottom);
 }
 
 #wordmark {
@@ -215,4 +217,47 @@ body {
 
 #row-toggles button.active {
   color: var(--fg);
+}
+
+@media (max-width: 30rem) {
+  #app {
+    padding: 1.5rem 1rem 0.5rem;
+  }
+
+  #prompt {
+    font-size: 5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  #input {
+    font-size: 1.25rem;
+    width: 7rem;
+  }
+
+  #feedback {
+    font-size: 0.85rem;
+  }
+
+  #stats {
+    font-size: 0.7rem;
+  }
+
+  #bottom {
+    padding-top: 2rem;
+  }
+
+  #wordmark {
+    padding: 0.75rem 1.25rem;
+  }
+
+  #settings button {
+    padding: 0.5rem 0.75rem;
+    min-height: 2.75rem;
+  }
+
+  #row-toggles button {
+    font-size: 0.8rem;
+    padding: 0.5rem 0.75rem;
+    min-height: 2.75rem;
+  }
 }
