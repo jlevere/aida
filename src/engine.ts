@@ -22,6 +22,7 @@ export function createEngine(callbacks: EngineCallbacks): {
   next: () => { kana: string; readings: readonly string[] } | null;
   attempt: (input: string) => "correct" | "incorrect" | "pending";
   checkPrefix: (input: string) => boolean;
+  getCurrentReadings: () => readonly string[] | null;
   getStats: () => SessionStats;
   getSettings: () => Settings;
   updateSettings: (patch: Partial<Settings>) => void;
@@ -178,6 +179,13 @@ export function createEngine(callbacks: EngineCallbacks): {
         }
       }
       return false;
+    },
+
+    getCurrentReadings: (): readonly string[] | null => {
+      if (current === null) {
+        return null;
+      }
+      return current.entry.readings;
     },
 
     getStats: (): SessionStats => stats,

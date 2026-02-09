@@ -27,11 +27,30 @@ function main(): void {
     throw new Error("Input element not found");
   }
 
-  let locked = false;
+  let retryReadings: readonly string[] | null = null;
 
   const input = setupInput(inputEl, {
     onInput: (value: string): void => {
-      if (locked) return;
+      const normalized = value.toLowerCase().trim();
+
+      // Retry mode: user must retype the correct reading after a mistake
+      if (retryReadings !== null) {
+        const isPrefix = retryReadings.some(r => r.startsWith(normalized));
+        input.setError(normalized.length > 0 && !isPrefix);
+
+        const isMatch = retryReadings.some(r => r === normalized);
+        if (isMatch) {
+          retryReadings = null;
+          input.clear();
+          renderer.clearFeedback();
+          const next = engine.next();
+          if (next === null) {
+            renderer.showPrompt("—");
+          }
+          input.focus();
+        }
+        return;
+      }
 
       const isValidPrefix = engine.checkPrefix(value);
       input.setError(value.length > 0 && !isValidPrefix);
@@ -39,24 +58,15 @@ function main(): void {
       const result = engine.attempt(value);
       if (result === "correct") {
         input.clear();
-        // feedback already shown by onCorrect callback, will auto-fade
         const next = engine.next();
         if (next === null) {
           renderer.showPrompt("—");
         }
         input.focus();
       } else if (result === "incorrect") {
-        // Feedback already shown by engine callback
-        locked = true;
-        setTimeout(() => {
-          locked = false;
-          input.clear();
-          const next = engine.next();
-          if (next === null) {
-            renderer.showPrompt("—");
-          }
-          input.focus();
-        }, 1200);
+        retryReadings = engine.getCurrentReadings();
+        input.clear();
+        input.focus();
       }
     },
   });
