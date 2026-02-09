@@ -1,4 +1,5 @@
 import { createEmptyCard, fsrs, generatorParameters, Rating } from "ts-fsrs";
+import type { Card } from "ts-fsrs";
 import type { CardState, KanaEntry } from "./types.ts";
 import type { Grade } from "ts-fsrs";
 
@@ -22,30 +23,35 @@ export function getNextDue(cards: Map<string, CardState>): CardState | undefined
     return undefined;
   }
   const now = new Date();
-  let earliest: CardState | undefined;
+  const dueNow: CardState[] = [];
   for (const state of cards.values()) {
     const due = state.card.due instanceof Date ? state.card.due : new Date(state.card.due);
     if (due <= now) {
-      if (earliest === undefined || due < (earliest.card.due instanceof Date ? earliest.card.due : new Date(earliest.card.due))) {
-        earliest = state;
-      }
+      dueNow.push(state);
     }
   }
-  if (earliest !== undefined) {
-    return earliest;
+  if (dueNow.length > 0) {
+    // Randomly pick from cards that are due now
+    return dueNow[Math.floor(Math.random() * dueNow.length)];
   }
-  // None are due, return the one with earliest upcoming due date
-  let soonest: CardState | undefined;
+  // None are due, find the soonest due date
+  let soonestDue: Date | undefined;
+  const soonestCandidates: CardState[] = [];
   for (const state of cards.values()) {
     const due = state.card.due instanceof Date ? state.card.due : new Date(state.card.due);
-    const soonestDue = soonest !== undefined
-      ? (soonest.card.due instanceof Date ? soonest.card.due : new Date(soonest.card.due))
-      : new Date(0);
-    if (soonest === undefined || due < soonestDue) {
-      soonest = state;
+    if (soonestDue === undefined || due < soonestDue) {
+      soonestDue = due;
+      soonestCandidates.length = 0;
+      soonestCandidates.push(state);
+    } else if (due.getTime() === soonestDue.getTime()) {
+      soonestCandidates.push(state);
     }
   }
-  return soonest;
+  if (soonestCandidates.length > 0) {
+    // Randomly pick from cards with the same soonest due date
+    return soonestCandidates[Math.floor(Math.random() * soonestCandidates.length)];
+  }
+  return undefined;
 }
 
 export function reviewCard(state: CardState, rating: Rating, responseTime: number): CardState {
@@ -57,4 +63,32 @@ export function reviewCard(state: CardState, rating: Rating, responseTime: numbe
     card: result.card,
     times,
   };
+}
+
+export function formatInterval(card: Card): string {
+  const now = new Date();
+  const due = card.due instanceof Date ? card.due : new Date(card.due);
+  const diffMs = due.getTime() - now.getTime();
+  const diffMinutes = Math.round(diffMs / (1000 * 60));
+  const diffHours = Math.round(diffMs / (1000 * 60 * 60));
+  const diffDays = Math.round(diffMs / (1000 * 60 * 60 * 24));
+  const diffWeeks = Math.round(diffMs / (1000 * 60 * 60 * 24 * 7));
+  const diffMonths = Math.round(diffMs / (1000 * 60 * 60 * 24 * 30));
+
+  if (diffMinutes < 1) {
+    return "now";
+  } else if (diffMinutes < 60) {
+    return `${String(diffMinutes)}m`;
+  } else if (diffHours < 24) {
+    return `${String(diffHours)}h`;
+  } else if (diffDays < 7) {
+    return `${String(diffDays)}d`;
+  } else if (diffWeeks < 4) {
+    return `${String(diffWeeks)}w`;
+  } else if (diffMonths < 12) {
+    return `${String(diffMonths)}mo`;
+  } else {
+    const years = Math.round(diffMs / (1000 * 60 * 60 * 24 * 365));
+    return `${String(years)}y`;
+  }
 }

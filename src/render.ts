@@ -69,7 +69,7 @@ export function createRenderer(): Renderer {
       }
       const accuracy = Math.round((sessionStats.correct / sessionStats.responses) * 100);
       const avgTime = (sessionStats.totalTime / sessionStats.responses / 1000).toFixed(1);
-      stats.textContent = `${String(accuracy)}% · ${avgTime}s`;
+      stats.innerHTML = `<span data-tooltip="accuracy">${String(accuracy)}%</span> · <span data-tooltip="avg response">${avgTime}s</span>`;
       if (sessionStats.responses > 2) {
         stats.style.opacity = "1";
       }

@@ -1,13 +1,13 @@
 import { Rating } from "ts-fsrs";
 import type { CardState, KanaEntry, SessionStats, Settings } from "./types.ts";
 import { getActiveKana } from "./kana.ts";
-import { initCard, getNextDue, reviewCard } from "./scheduler.ts";
+import { initCard, getNextDue, reviewCard, formatInterval } from "./scheduler.ts";
 import { loadCards, saveCards, loadSettings, saveSettings, loadStats, saveStats } from "./store.ts";
 
 interface EngineCallbacks {
   onPrompt: (kana: string) => void;
-  onCorrect: () => void;
-  onIncorrect: (correctReading: string) => void;
+  onCorrect: (interval: string) => void;
+  onIncorrect: (correctReading: string, interval: string) => void;
   onStatsUpdate: (stats: SessionStats) => void;
 }
 
@@ -20,7 +20,7 @@ interface CurrentState {
 export function createEngine(callbacks: EngineCallbacks): {
   init: () => void;
   next: () => { kana: string; readings: readonly string[] } | null;
-  attempt: (input: string, isSubmit?: boolean) => "correct" | "incorrect" | "pending";
+  attempt: (input: string) => "correct" | "incorrect" | "pending";
   checkPrefix: (input: string) => boolean;
   getStats: () => SessionStats;
   getSettings: () => Settings;
@@ -90,12 +90,17 @@ export function createEngine(callbacks: EngineCallbacks): {
       return { kana: entry.kana, readings: entry.readings };
     },
 
-    attempt: (input: string, isSubmit = false): "correct" | "incorrect" | "pending" => {
+    attempt: (input: string): "correct" | "incorrect" | "pending" => {
       if (current === null) {
         return "pending";
       }
 
       const normalized = input.toLowerCase().trim();
+
+      // Empty input is always pending
+      if (normalized.length === 0) {
+        return "pending";
+      }
 
       // Check if it's an exact match
       for (const reading of current.entry.readings) {
@@ -104,6 +109,7 @@ export function createEngine(callbacks: EngineCallbacks): {
           const responseTime = performance.now() - current.startTime;
           const updated = reviewCard(current.state, Rating.Good, responseTime);
           cards.set(current.entry.kana, updated);
+          const interval = formatInterval(updated.card);
 
           stats = {
             correct: stats.correct + 1,
@@ -114,7 +120,7 @@ export function createEngine(callbacks: EngineCallbacks): {
 
           saveCards(cards);
           saveStats(stats);
-          callbacks.onCorrect();
+          callbacks.onCorrect(interval);
           callbacks.onStatsUpdate(stats);
 
           current = null;
@@ -129,30 +135,26 @@ export function createEngine(callbacks: EngineCallbacks): {
         }
       }
 
-      // Not a valid prefix - only mark incorrect on explicit submit
-      if (isSubmit) {
-        // Incorrect answer
-        const responseTime = performance.now() - current.startTime;
-        const updated = reviewCard(current.state, Rating.Again, responseTime);
-        cards.set(current.entry.kana, updated);
+      // Not a valid prefix - immediately mark incorrect
+      const responseTime = performance.now() - current.startTime;
+      const updated = reviewCard(current.state, Rating.Again, responseTime);
+      cards.set(current.entry.kana, updated);
+      const interval = formatInterval(updated.card);
 
-        stats = {
-          correct: stats.correct,
-          incorrect: stats.incorrect + 1,
-          totalTime: stats.totalTime + responseTime,
-          responses: stats.responses + 1,
-        };
+      stats = {
+        correct: stats.correct,
+        incorrect: stats.incorrect + 1,
+        totalTime: stats.totalTime + responseTime,
+        responses: stats.responses + 1,
+      };
 
-        saveCards(cards);
-        saveStats(stats);
-        callbacks.onIncorrect(current.entry.readings[0] ?? "");
-        callbacks.onStatsUpdate(stats);
+      saveCards(cards);
+      saveStats(stats);
+      callbacks.onIncorrect(current.entry.readings[0] ?? "", interval);
+      callbacks.onStatsUpdate(stats);
 
-        // Don't clear current yet - let render show feedback first
-        return "incorrect";
-      }
-
-      return "pending";
+      // Don't clear current yet - let render show feedback first
+      return "incorrect";
     },
 
     checkPrefix: (input: string): boolean => {

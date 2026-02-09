@@ -11,11 +11,11 @@ function main(): void {
     onPrompt: (kana: string): void => {
       renderer.showPrompt(kana);
     },
-    onCorrect: (): void => {
-      // Prompt will be updated by next()
+    onCorrect: (interval: string): void => {
+      renderer.showFeedback(`→ ${interval}`);
     },
-    onIncorrect: (correctReading: string): void => {
-      renderer.showFeedback(correctReading);
+    onIncorrect: (correctReading: string, interval: string): void => {
+      renderer.showFeedback(`${correctReading} · → ${interval}`);
     },
     onStatsUpdate: (stats): void => {
       renderer.updateStats(stats);
@@ -32,43 +32,29 @@ function main(): void {
       const isValidPrefix = engine.checkPrefix(value);
       input.setError(value.length > 0 && !isValidPrefix);
 
-      // Only check for correct match on input (auto-advance)
       const result = engine.attempt(value);
       if (result === "correct") {
         input.clear();
-        renderer.clearFeedback();
-        const next = engine.next();
-        if (next === null) {
-          renderer.showPrompt("—");
-        }
-        input.focus();
-      }
-    },
-    onSubmit: (value: string): void => {
-      if (value.length === 0) {
-        return;
-      }
-
-      // On submit, explicitly evaluate (may mark as incorrect)
-      const result = engine.attempt(value, true);
-      if (result === "incorrect") {
-        // Feedback already shown by engine callback
         setTimeout(() => {
+          renderer.clearFeedback();
+          const next = engine.next();
+          if (next === null) {
+            renderer.showPrompt("—");
+          }
+          input.focus();
+        }, 1500);
+      } else if (result === "incorrect") {
+        // Feedback already shown by engine callback
+        input.setDisabled(true);
+        setTimeout(() => {
+          input.setDisabled(false);
           input.clear();
           const next = engine.next();
           if (next === null) {
             renderer.showPrompt("—");
           }
           input.focus();
-        }, 1000);
-      } else if (result === "correct") {
-        input.clear();
-        renderer.clearFeedback();
-        const next = engine.next();
-        if (next === null) {
-          renderer.showPrompt("—");
-        }
-        input.focus();
+        }, 1200);
       }
     },
   });
