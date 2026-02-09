@@ -1,0 +1,140 @@
+:root {
+  --bg: #f5f2ed;
+  --fg: #2c2c2c;
+  --accent: #4a4a6a;
+  --error: #8b4c4c;
+  --success: #4c6b4c;
+  --muted: #9a9a8e;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
+}
+
+#app {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 2rem;
+}
+
+#prompt {
+  font-size: 8rem;
+  font-family: "Hiragino Kaku Gothic Pro", "Noto Sans JP", serif;
+  line-height: 1;
+  color: var(--fg);
+  transition: opacity 200ms ease;
+  user-select: none;
+  margin-bottom: 2rem;
+}
+
+#input {
+  font-size: 1.5rem;
+  font-family: inherit;
+  text-align: center;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid var(--muted);
+  outline: none;
+  color: var(--fg);
+  width: 8rem;
+  padding: 0.5rem 0;
+  margin-top: 2rem;
+  letter-spacing: 0.1em;
+  transition: border-color 150ms ease;
+}
+
+#input:focus {
+  border-color: var(--accent);
+}
+
+#input[data-error="true"] {
+  border-color: var(--error);
+}
+
+#feedback {
+  font-size: 0.9rem;
+  color: var(--muted);
+  min-height: 1.5em;
+  margin-top: 1rem;
+  transition: opacity 150ms ease;
+}
+
+#stats {
+  font-size: 0.75rem;
+  color: var(--muted);
+  margin-top: 2rem;
+  letter-spacing: 0.05em;
+  opacity: 0;
+  transition: opacity 300ms ease;
+}
+
+#wordmark {
+  position: fixed;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 1rem;
+  color: var(--muted);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: "Hiragino Kaku Gothic Pro", "Noto Sans JP", serif;
+  letter-spacing: 0.2em;
+  transition: color 150ms ease;
+  padding: 0.5rem 1rem;
+}
+
+#wordmark:hover {
+  color: var(--accent);
+}
+
+#settings {
+  position: fixed;
+  bottom: 4rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: max-height 300ms ease, opacity 200ms ease;
+}
+
+#settings.open {
+  max-height: 12rem;
+  opacity: 1;
+}
+
+#settings button {
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 0.8rem;
+  cursor: pointer;
+  letter-spacing: 0.05em;
+  font-family: inherit;
+  padding: 0.25rem 0.5rem;
+}
+
+#settings button.active {
+  color: var(--fg);
+}
+
+#settings button#reset:hover {
+  color: var(--error);
+}
